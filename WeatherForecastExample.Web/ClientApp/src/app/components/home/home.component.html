@@ -52,11 +52,11 @@
     <mat-card-title>{{ wrapper.Date | date:'MM/dd' }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <table mat-table [dataSource]="wrapper.dataSource" class="mat-elevation-z8">
+    <table mat-table [dataSource]="wrapper.dataSource" class="mat-elevation-z8 temperature-table">
 
       <ng-container matColumnDef="hour">
         <th mat-header-cell *matHeaderCellDef> Hour</th>
-        <td mat-cell *matCellDef="let element"> {{ element.hour | timeSpan }} </td>
+        <td mat-cell *matCellDef="let element" class="hour">{{ element.hour | timeSpan }}</td>
       </ng-container>
 
       <ng-container matColumnDef="temperature">

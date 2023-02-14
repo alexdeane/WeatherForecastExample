@@ -25,3 +25,13 @@ mat-card {
 .search-content {
   margin-top: 10px;
 }
+
+.table td, .table th {
+  font-size: 10px;
+}
+
+.hour {
+  background-color: darkslategrey;
+  color: #0dcaf0;
+  font-family: Consolas, serif
+}
