@@ -72,8 +72,7 @@
               "browserTarget": "weatherforecastexample:build:production"
             },
             "development": {
-              "browserTarget": "weatherforecastexample:build:development",
-              "proxyConfig": "proxy.conf.js"
+              "browserTarget": "weatherforecastexample:build:development"
             }
           },
           "defaultConfiguration": "development"

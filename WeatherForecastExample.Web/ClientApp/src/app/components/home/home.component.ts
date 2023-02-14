@@ -2,19 +2,26 @@ import {AfterViewInit, Component} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {ApiService} from "../../services/api-service";
 import {HttpResponse} from "@angular/common/http";
-import {WeatherForecastResult} from "../../models/weather-forecast";
+import {ServiceResult, WeatherForecastResult} from "../../models/weather-forecast";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent {
   public isSearching = false;
   public dataSourceWrappers: DataSourceWrapper[] = [];
-  public locationName: string | undefined = undefined;
-  public temperatureUnit: string | undefined = undefined;
-
+  public locationData: LocationData | null = null;
   public error: string | null = null;
+
+  public searchForm = new FormGroup({
+    search: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3)
+    ])
+  })
 
   public readonly displayedColumns = [
     'hour',
@@ -24,13 +31,37 @@ export class HomeComponent implements AfterViewInit {
   constructor(private apiService: ApiService) {
   }
 
-  ngAfterViewInit(): void {
-    this.apiService.searchForecasts('bal')
+
+  get search() {
+    return this.searchForm.get('search');
+  }
+
+  public onSubmit(event: any): void {
+    event.preventDefault();
+    this.isSearching = true;
+    this.error = null;
+
+    const search = this.searchForm.controls.search.value ?? '';
+
+    this.apiService.searchForecasts(search)
       .subscribe({
-        next: (res: HttpResponse<WeatherForecastResult>) => {
-          this.locationName = res.body?.name;
-          this.temperatureUnit = res.body?.temperatureUnit;
-          this.dataSourceWrappers = res.body?.data?.map(x => <DataSourceWrapper>{
+        next: (res: HttpResponse<ServiceResult<WeatherForecastResult>>) => {
+          if (res.body?.userSafeError?.trim()) {
+            this.error = res.body?.userSafeError;
+            this.isSearching = false;
+            return;
+          }
+
+          const result = res.body?.result;
+
+          this.locationData = <LocationData> {
+            locationName: result?.name,
+            countryName: result?.country,
+            timeZoneName: result?.timeZone,
+            temperatureUnit: result?.temperatureUnit
+          }
+
+          this.dataSourceWrappers = result?.data?.map(x => <DataSourceWrapper> {
             dataSource: new MatTableDataSource<WeatherForecastTableEntity>(x.temperatures?.map((y: number, i: number) => <WeatherForecastTableEntity>{
               temperature: y,
               hour: i
@@ -41,6 +72,7 @@ export class HomeComponent implements AfterViewInit {
         error: (e) => {
           console.log(e);
           this.error = "Something broke";
+          this.isSearching = false;
         },
         complete: () => {
           this.isSearching = false;
@@ -49,12 +81,19 @@ export class HomeComponent implements AfterViewInit {
   }
 }
 
+interface LocationData {
+  locationName: string;
+  countryName: string;
+  timeZoneName: string;
+  temperatureUnit: string;
+}
+
 interface DataSourceWrapper {
   dataSource: MatTableDataSource<WeatherForecastTableEntity>;
   Date: Date;
 }
 
-export interface WeatherForecastTableEntity {
+interface WeatherForecastTableEntity {
   hour: number;
   temperature: number;
 }

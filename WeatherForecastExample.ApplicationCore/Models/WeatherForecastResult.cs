@@ -5,7 +5,9 @@
 /// </summary>
 public class WeatherForecastResult
 {
-    public string Name { get; init; }
+    public string? Name { get; init; }
+    public string? Country { get; init; }
+    public string? TimeZone { get; init; }
     public IEnumerable<WeatherForecastData>? Data { get; init; }
     public string? TimeUnit { get; init; }
     public string? TemperatureUnit { get; init; }

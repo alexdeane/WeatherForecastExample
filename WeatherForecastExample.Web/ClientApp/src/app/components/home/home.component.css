@@ -1,0 +1,27 @@
+﻿.weather-card {
+  display: inline-block;
+}
+
+.submit-btn {
+  float: right;
+}
+
+.search-input {
+  height: 50%;
+}
+
+mat-card {
+  margin: 5px;
+}
+
+.flex-row-custom {
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  display: flex;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.search-content {
+  margin-top: 10px;
+}

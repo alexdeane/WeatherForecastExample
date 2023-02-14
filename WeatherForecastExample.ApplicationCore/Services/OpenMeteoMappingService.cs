@@ -19,7 +19,8 @@ public interface IOpenMeteoMappingService
 /// </summary>
 public class OpenMeteoMappingService : IOpenMeteoMappingService
 {
-    public WeatherForecastResult Map(OpenMeteoWeatherResponse openMeteoWeatherResponse,
+    public WeatherForecastResult Map(
+        OpenMeteoWeatherResponse openMeteoWeatherResponse,
         OpenMeteoLocationResult location)
     {
         var temperatures = openMeteoWeatherResponse.Hourly?.Temperature2M;
@@ -28,6 +29,8 @@ public class OpenMeteoMappingService : IOpenMeteoMappingService
         return new WeatherForecastResult
         {
             Name = location.Name,
+            Country = location.Country,
+            TimeZone = location.TimeZone,
             TimeUnit = openMeteoWeatherResponse.HourlyUnits?.Time,
             TemperatureUnit = openMeteoWeatherResponse.HourlyUnits?.Temperature2M,
             Data = MapForecastData(dates, temperatures)
