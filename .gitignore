@@ -4,3 +4,4 @@ obj/
 Properties/
 **/wwwroot/lib/
 /node_modules/
+.angular/
