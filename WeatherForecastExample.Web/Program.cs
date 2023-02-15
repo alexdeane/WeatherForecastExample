@@ -12,6 +12,8 @@ builder.Services.AddSpaStaticFiles(configuration =>
     configuration.RootPath = "ClientApp";
 });
 
+builder.Services.AddCors();
+
 builder.Services.AddApplicationDependencies();
 
 builder.Services
