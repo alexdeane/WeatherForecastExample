@@ -16,7 +16,9 @@ public class WeatherForecastService : IWeatherForecastService
     private readonly IWeatherClient _weatherClient;
     private readonly IOpenMeteoMappingService _mappingService;
 
-    public WeatherForecastService(IGeoCodingClient geoCodingClient, IWeatherClient weatherClient,
+    public WeatherForecastService(
+        IGeoCodingClient geoCodingClient,
+        IWeatherClient weatherClient,
         IOpenMeteoMappingService mappingService)
     {
         _geoCodingClient = geoCodingClient;

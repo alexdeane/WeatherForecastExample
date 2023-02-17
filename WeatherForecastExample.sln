@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecastExample.Web"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecastExample.ApplicationCore", "WeatherForecastExample.ApplicationCore\WeatherForecastExample.ApplicationCore.csproj", "{FD4A01A5-2615-4F36-8F18-4C1B82F88654}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecastExample.ApplicationCore.UnitTests", "WeatherForecastExample.ApplicationCore.UnitTests\WeatherForecastExample.ApplicationCore.UnitTests.csproj", "{3A80CE4E-BAC2-4FBE-A603-53CDC1EF0B44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{FD4A01A5-2615-4F36-8F18-4C1B82F88654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD4A01A5-2615-4F36-8F18-4C1B82F88654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD4A01A5-2615-4F36-8F18-4C1B82F88654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A80CE4E-BAC2-4FBE-A603-53CDC1EF0B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A80CE4E-BAC2-4FBE-A603-53CDC1EF0B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A80CE4E-BAC2-4FBE-A603-53CDC1EF0B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A80CE4E-BAC2-4FBE-A603-53CDC1EF0B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
