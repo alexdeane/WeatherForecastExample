@@ -1,8 +1,3 @@
-export interface ServiceResult<T> {
-  result?: T;
-  userSafeError?: string;
-}
-
 export interface WeatherForecastResult {
   name: string;
   country: string;
@@ -11,6 +6,12 @@ export interface WeatherForecastResult {
   timeUnit?: string;
   temperatureUnit?: string;
 }
+
+export interface Error {
+  userSafeErrorMessage: string;
+}
+
+export type WeatherForecastResponse = WeatherForecastResult & Error;
 
 export interface WeatherForecastData {
   date?: Date;

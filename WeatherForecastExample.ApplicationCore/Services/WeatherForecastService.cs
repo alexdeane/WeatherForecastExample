@@ -1,13 +1,13 @@
-﻿using WeatherForecastExample.ApplicationCore.Abstraction;
+﻿using OneOf;
 using WeatherForecastExample.ApplicationCore.Clients;
-using WeatherForecastExample.ApplicationCore.Clients.Contracts;
 using WeatherForecastExample.ApplicationCore.Models;
 
 namespace WeatherForecastExample.ApplicationCore.Services;
 
 public interface IWeatherForecastService
 {
-    Task<ServiceResult<WeatherForecastResult>> GetForecasts(string locationName, CancellationToken cancellationToken);
+    Task<OneOf<WeatherForecastResult, WeatherForecastError>> GetForecasts(string locationName,
+        CancellationToken cancellationToken);
 }
 
 public class WeatherForecastService : IWeatherForecastService
@@ -26,47 +26,27 @@ public class WeatherForecastService : IWeatherForecastService
         _mappingService = mappingService;
     }
 
-    public async Task<ServiceResult<WeatherForecastResult>> GetForecasts(string locationName,
+    public async Task<OneOf<WeatherForecastResult, WeatherForecastError>> GetForecasts(string locationName,
         CancellationToken cancellationToken)
     {
-        OpenMeteoLocationResponse locationResult;
-
         try
         {
-            locationResult = await _geoCodingClient.GetLocation(locationName, cancellationToken);
-        }
-        catch (ClientException exception)
-        {
-            // We know this message is user safe
-            return ErrorResult(exception.Message);
-        }
+            var locationResult = await _geoCodingClient.GetLocation(locationName, cancellationToken);
 
-        var location = locationResult.Results!.First();
+            var location = locationResult.Results!.First();
 
-        OpenMeteoWeatherResponse weatherResponse;
-
-        try
-        {
-            weatherResponse = await _weatherClient.GetWeatherForecasts(
+            var weatherResponse = await _weatherClient.GetWeatherForecasts(
                 latitude: location.Latitude,
                 longitude: location.Longitude,
                 cancellationToken: cancellationToken
             );
+
+            return _mappingService.Map(weatherResponse, location);
         }
         catch (ClientException exception)
         {
             // We know this message is user safe
-            return ErrorResult(exception.Message);
+            return new WeatherForecastError(exception.Message);
         }
-
-        var result = _mappingService.Map(weatherResponse, location);
-
-        return new ServiceResult<WeatherForecastResult>(result);
     }
-
-    private static ServiceResult<WeatherForecastResult> ErrorResult(string errorMessage)
-        => new()
-        {
-            UserSafeError = errorMessage
-        };
 }

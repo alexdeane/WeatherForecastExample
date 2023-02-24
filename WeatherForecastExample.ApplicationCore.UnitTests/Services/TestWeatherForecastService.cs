@@ -57,8 +57,8 @@ public class TestWeatherForecastService
         var serviceResult = await _weatherForecastService.GetForecasts(search, CancellationToken.None);
 
         // Assert
-        Assert.Null(serviceResult.UserSafeError);
-        Assert.NotNull(serviceResult.Result);
+        Assert.IsType<WeatherForecastResult>(serviceResult.Value);
+        Assert.Equal(weatherResult, serviceResult.Value);
 
         // Verify
         _mockGeoCodingClient.Verify(x => x.GetLocation(search, It.IsAny<CancellationToken>()), Times.Once);
@@ -83,9 +83,12 @@ public class TestWeatherForecastService
         var serviceResult = await _weatherForecastService.GetForecasts(search, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(serviceResult.UserSafeError);
-        Assert.Null(serviceResult.Result);
-        Assert.Equal("foo", serviceResult.UserSafeError);
+        Assert.IsType<WeatherForecastError>(serviceResult.Value);
+
+        var error = (WeatherForecastError) serviceResult.Value;
+
+        Assert.NotNull(error.UserSafeErrorMessage);
+        Assert.Equal("foo", error.UserSafeErrorMessage);
 
         // Verify
         _mockGeoCodingClient.Verify(x => x.GetLocation(search, It.IsAny<CancellationToken>()), Times.Once);

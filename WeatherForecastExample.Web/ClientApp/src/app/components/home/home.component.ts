@@ -1,9 +1,9 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {ApiService} from "../../services/api-service";
 import {HttpResponse} from "@angular/common/http";
-import {ServiceResult, WeatherForecastResult} from "../../models/weather-forecast";
-import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Error, WeatherForecastResponse, WeatherForecastResult} from "../../models/weather-forecast";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-home',
@@ -45,29 +45,12 @@ export class HomeComponent {
 
     this.apiService.searchForecasts(search)
       .subscribe({
-        next: (res: HttpResponse<ServiceResult<WeatherForecastResult>>) => {
-          if (res.body?.userSafeError?.trim()) {
-            this.error = res.body?.userSafeError;
-            this.isSearching = false;
-            return;
+        next: ({body}: HttpResponse<WeatherForecastResponse>) => {
+          if (body?.userSafeErrorMessage) {
+            this.onFailure(body)
+          } else {
+            this.onSuccess(body);
           }
-
-          const result = res.body?.result;
-
-          this.locationData = <LocationData> {
-            locationName: result?.name,
-            countryName: result?.country,
-            timeZoneName: result?.timeZone,
-            temperatureUnit: result?.temperatureUnit
-          }
-
-          this.dataSourceWrappers = result?.data?.map(x => <DataSourceWrapper> {
-            dataSource: new MatTableDataSource<WeatherForecastTableEntity>(x.temperatures?.map((y: number, i: number) => <WeatherForecastTableEntity>{
-              temperature: y,
-              hour: i
-            })) ?? [],
-            Date: x.date
-          }) ?? [];
         },
         error: (e) => {
           console.log(e);
@@ -78,6 +61,29 @@ export class HomeComponent {
           this.isSearching = false;
         }
       })
+  }
+  private onFailure(error: Error) {
+    console.log(error)
+    this.error = error?.userSafeErrorMessage;
+    this.isSearching = false;
+    return;
+  }
+
+  private onSuccess(result: WeatherForecastResult | null) {
+    this.locationData = <LocationData> {
+      locationName: result?.name,
+      countryName: result?.country,
+      timeZoneName: result?.timeZone,
+      temperatureUnit: result?.temperatureUnit
+    }
+
+    this.dataSourceWrappers = result?.data?.map(x => <DataSourceWrapper> {
+      dataSource: new MatTableDataSource<WeatherForecastTableEntity>(x.temperatures?.map((y: number, i: number) => <WeatherForecastTableEntity>{
+        temperature: y,
+        hour: i
+      })) ?? [],
+      Date: x.date
+    }) ?? [];
   }
 }
 

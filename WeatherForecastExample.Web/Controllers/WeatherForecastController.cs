@@ -21,6 +21,6 @@ public class WeatherForecastController : ControllerBase
     public async Task<ActionResult<WeatherForecastResult>> Get([FromQuery] [Required] string search, CancellationToken cancellationToken)
     {
         var result = await _weatherForecastService.GetForecasts(search, cancellationToken);
-        return Ok(result);
+        return Ok(result.Value);
     }
 }
