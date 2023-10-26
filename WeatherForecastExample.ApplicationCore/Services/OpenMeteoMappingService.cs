@@ -37,7 +37,11 @@ public class OpenMeteoMappingService : IOpenMeteoMappingService
         };
     }
 
-    private static IEnumerable<WeatherForecastData> MapForecastData(IEnumerable<DateTime> dates,
+    // This just reworks the API response such that it's a list
+    // of objects, each with a Date and an array of 24 temperatures.
+    // The index of the array indicates the hour of the day 
+    private static IEnumerable<WeatherForecastData> MapForecastData(
+        IEnumerable<DateTime> dates,
         IEnumerable<decimal> temperatures)
         => temperatures
             .Zip(dates, (temp, t) =>

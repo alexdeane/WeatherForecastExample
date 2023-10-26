@@ -3,7 +3,7 @@
 namespace WeatherForecastExample.ApplicationCore.Clients.Contracts;
 
 /// <summary>
-/// client result from geolocation
+/// POCO for the response from the GeoCoding API
 /// </summary>
 public class OpenMeteoLocationResponse
 {

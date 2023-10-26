@@ -3,7 +3,7 @@
 namespace WeatherForecastExample.ApplicationCore.Clients.Contracts;
 
 /// <summary>
-/// Database entity
+/// POCO for the response from the weather API
 /// </summary>
 public class OpenMeteoWeatherResponse
 {

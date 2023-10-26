@@ -31,16 +31,20 @@ public class WeatherForecastService : IWeatherForecastService
     {
         try
         {
+            // Convert the user's search to a set of coordinates
             var locationResult = await _geoCodingClient.GetLocation(locationName, cancellationToken);
 
+            // Just use the first match
             var location = locationResult.Results!.First();
 
+            // Get the weather data for that set of coordinates
             var weatherResponse = await _weatherClient.GetWeatherForecasts(
                 latitude: location.Latitude,
                 longitude: location.Longitude,
                 cancellationToken: cancellationToken
             );
 
+            // Map the ridiculous API response to something more useful to the frontend
             return _mappingService.Map(weatherResponse, location);
         }
         catch (ClientException exception)

@@ -31,7 +31,6 @@ export class HomeComponent {
   constructor(private apiService: ApiService) {
   }
 
-
   get search() {
     return this.searchForm.get('search');
   }

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="OneOf" Version="3.0.223" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     </ItemGroup>
 
 </Project>

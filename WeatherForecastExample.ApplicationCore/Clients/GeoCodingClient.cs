@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using WeatherForecastExample.ApplicationCore.Clients.Contracts;
 
 namespace WeatherForecastExample.ApplicationCore.Clients;
@@ -8,25 +9,32 @@ public interface IGeoCodingClient
     Task<OpenMeteoLocationResponse> GetLocation(string name, CancellationToken cancellationToken);
 }
 
-public class GeoCodingClient : Client, IGeoCodingClient
+// This and the weather client do almost identical operations and one may be tempted
+// to consolidate them into the same class - but I've found that keeping clients separate
+// is usually easier to maintain, especially in larger applications
+public class GeoCodingClient : IGeoCodingClient
 {
+    private readonly IHttpClientFactory _factory;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
+
+    public GeoCodingClient(IHttpClientFactory factory)
+    {
+        _factory = factory;
+    }
 
     public async Task<OpenMeteoLocationResponse> GetLocation(string name, CancellationToken cancellationToken)
     {
         var uri = BuildUri(name);
 
-        using var client = new HttpClient
-        {
-            BaseAddress = uri
-        };
+        var client = _factory.CreateClient(nameof(GeoCodingClient));
 
         try
         {
-            using var response = await client.GetAsync(uri, cancellationToken);
-            
-            var result = await DeserializeResult<OpenMeteoLocationResponse>(response, JsonSerializerOptions,
-                cancellationToken);
+            var result = await client.GetFromJsonAsync<OpenMeteoLocationResponse>(
+                requestUri: uri, 
+                options: JsonSerializerOptions,
+                cancellationToken: cancellationToken
+            );
 
             if (result?.Results is null || !result.Results.Any())
                 throw new ClientException("Location not found");
@@ -40,5 +48,5 @@ public class GeoCodingClient : Client, IGeoCodingClient
         }
     }
 
-    private static Uri BuildUri(string search) => new($"https://geocoding-api.open-meteo.com/v1/search?name={search}");
+    private static Uri BuildUri(string search) => new($"v1/search?name={search}");
 }
