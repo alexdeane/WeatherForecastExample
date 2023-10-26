@@ -56,7 +56,6 @@ public class WeatherClient : IWeatherClient
         }
     }
 
-    private static Uri BuildUri(decimal latitude, decimal longitude) =>
-        new(
-            $"v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m&windspeed_unit=mph&precipitation_unit=inch&temperature_unit=fahrenheit");
+    private static string BuildUri(decimal latitude, decimal longitude) =>
+            $"v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m&windspeed_unit=mph&precipitation_unit=inch&temperature_unit=fahrenheit";
 }

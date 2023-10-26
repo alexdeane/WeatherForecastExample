@@ -48,5 +48,5 @@ public class GeoCodingClient : IGeoCodingClient
         }
     }
 
-    private static Uri BuildUri(string search) => new($"v1/search?name={search}");
+    private static string BuildUri(string search) => $"v1/search?name={search}";
 }
